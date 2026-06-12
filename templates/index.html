@@ -1,1 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>📝 My Todo List</h1>
+        <p class="subtitle">Built with Flask + SQLite | By Tranio Mathew T</p>
 
+        <form action="/add" method="POST" class="add-form">
+            <input type="text" name="title" placeholder="Add a new task..." required/>
+            <button type="submit">Add</button>
+        </form>
+
+        <div class="stats">
+            <span>Total: {{ todos|length }}</span>
+            <span>Done: {{ todos|selectattr('completed','equalto',1)|list|length }}</span>
+            <span>Pending: {{ todos|selectattr('completed','equalto',0)|list|length }}</span>
+        </div>
+
+        <ul class="todo-list">
+            {% if todos %}
+                {% for todo in todos %}
+                <li class="todo-item {% if todo.completed %}completed{% endif %}">
+                    <span class="todo-title">{{ todo.title }}</span>
+                    <div class="actions">
+                        <a href="/complete/{{ todo.id }}" class="btn-complete">
+                            {% if todo.completed %}↩ Undo{% else %}✓ Done{% endif %}
+                        </a>
+                        <a href="/delete/{{ todo.id }}" class="btn-delete">🗑 Delete</a>
+                    </div>
+                </li>
+                {% endfor %}
+            {% else %}
+                <li class="empty">No tasks yet. Add one above!</li>
+            {% endif %}
+        </ul>
+    </div>
+</body>
+</html>
